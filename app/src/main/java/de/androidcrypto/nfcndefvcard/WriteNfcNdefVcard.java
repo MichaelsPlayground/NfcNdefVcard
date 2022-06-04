@@ -1,11 +1,5 @@
 package de.androidcrypto.nfcndefvcard;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -17,21 +11,26 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+
+import ezvcard.Ezvcard;
+import ezvcard.VCardVersion;
 
 public class WriteNfcNdefVcard extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
     EditText etName, etOrganisation, etTelefoneBusiness;
+    TextView ndefMessage;
 
     private NfcAdapter mNfcAdapter;
 
@@ -42,6 +41,7 @@ public class WriteNfcNdefVcard extends AppCompatActivity implements NfcAdapter.R
         etName = findViewById(R.id.etWriteName);
         etOrganisation = findViewById(R.id.etWriteOrganisation);
         etTelefoneBusiness = findViewById(R.id.etWriteTelBusiness);
+        ndefMessage = findViewById(R.id.tvNdefMessage);
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
@@ -109,9 +109,17 @@ public class WriteNfcNdefVcard extends AppCompatActivity implements NfcAdapter.R
             String url = "https://insanto.de";
 
             String vcardString = generateVcard(name, orga, "", telBusi, emailBusi, url);
+
+            vcardString = Ezvcard.write(CreateVCard.createVCard()).version(VCardVersion.V3_0).go();
+
+
+            String finalVcardString = vcardString;
             runOnUiThread(() -> {
-                etName.setText(vcardString);
+                ndefMessage.setText(finalVcardString);
             });
+
+            // data is encoded in US-ASCII:
+            vcardData = vcardString.getBytes(StandardCharsets.US_ASCII);
 
             NdefRecord ndefRecordVcard = new NdefRecord(NdefRecord.TNF_MIME_MEDIA, "text(vcard".getBytes(StandardCharsets.UTF_8), new byte[] {}, vcardData);
 
