@@ -16,7 +16,96 @@ public class CreateVCard {
     // this class will create a VCard using library ez-vcard
     // https://github.com/mangstadt/ez-vcard
 
-    public static VCard createVCard() {
+    public static VCard createWorkVCard(
+            String givenName,
+            String familyName,
+            String prefixName, // like dr
+            String suffixName,
+            String organization,
+            String workTitle,
+            String workAddressStreet,
+            String workAddressPostcode,
+            String workAddressCity,
+            String workAddressCountry,
+            String workTelephoneNumber,
+            String workFaxNumber,
+            String workTelephoneCellNumber,
+            String workEmail,
+            String workUrl
+            //String workGeoCoordinate // from google maps 51.653257241208195, 6.625781480567649
+    ) {
+        VCard vcard = new VCard();
+        //vcard.setKind(Kind.individual());
+        //vcard.setGender(Gender.male());
+        //vcard.addLanguage("en-US");
+        vcard.addLanguage("de-DE");
+        StructuredName n = new StructuredName();
+        n.setFamily(familyName);
+        n.setGiven(givenName);
+        n.getPrefixes().add(prefixName);
+        vcard.setStructuredName(n);
+        vcard.setFormattedName(buildFormattedName(givenName, familyName, prefixName, suffixName));
+        //vcard.setNickname("John", "Jonny");
+        vcard.addTitle(workTitle);
+        vcard.setOrganization(organization);
+        Address adr = new Address();
+        adr.setStreetAddress(workAddressStreet);
+        adr.setLocality(workAddressCity);
+        //adr.setRegion("NY");
+        adr.setPostalCode(workAddressPostcode);
+        adr.setCountry(workAddressCountry);
+        //adr.setLabel("123 Wall St.\nNew York, NY 12345\nUSA");
+        adr.getTypes().add(AddressType.WORK);
+        vcard.addAddress(adr);
+        /*
+        adr = new Address();
+        adr.setStreetAddress("123 Main St.");
+        adr.setLocality("Albany");
+        adr.setRegion("NY");
+        adr.setPostalCode("54321");
+        adr.setCountry("USA");
+        adr.setLabel("123 Main St.\nAlbany, NY 54321\nUSA");
+        adr.getTypes().add(AddressType.HOME);
+        vcard.addAddress(adr);
+        */
+        vcard.addTelephoneNumber(workTelephoneNumber, TelephoneType.WORK);
+        vcard.addTelephoneNumber(workFaxNumber, TelephoneType.WORK, TelephoneType.FAX);
+        vcard.addTelephoneNumber(workTelephoneCellNumber, TelephoneType.WORK, TelephoneType.CELL);
+        //vcard.addEmail("johndoe@hotmail.com", EmailType.HOME);
+        vcard.addEmail(workEmail, EmailType.WORK);
+        vcard.addUrl(workUrl);
+
+        /* data is not shown in Samsung contact data
+        // sample 51.653257241208195, 6.625781480567649
+        double workGeoLatitude = 0, workGeoLongitude = 0;
+        // try to get the coordinates from the string
+        // check for a comma
+        String[] geoParts = workGeoCoordinate.split(",");
+        if (geoParts.length == 2) {
+            workGeoLatitude = Double.parseDouble(geoParts[0].trim());
+            workGeoLongitude = Double.parseDouble(geoParts[1].trim());
+            vcard.setGeo(workGeoLatitude, workGeoLongitude);
+        }*/
+        return vcard;
+    }
+
+    private static String buildFormattedName(String givenName,
+                                             String familyName,
+                                             String prefixName, // like dr
+                                             String suffixName) {
+        String returnString = "";
+        if (!prefixName.equals("")) returnString = returnString + prefixName + ". ";
+        if (!givenName.equals("")) returnString = returnString + givenName + " ";
+        if (!familyName.equals("")) {
+            returnString = returnString + familyName + " ";
+        } else {
+            returnString = returnString + "No Name" + " ";
+        }
+        if (!suffixName.equals("")) returnString = returnString + suffixName;
+        return returnString;
+    }
+
+    public static VCard createSampleVCard() {
         VCard vcard = new VCard();
 
         vcard.setKind(Kind.individual());

@@ -101,17 +101,59 @@ public class WriteNfcNdefVcard extends AppCompatActivity implements NfcAdapter.R
                 etOrganisation.setText(timeNow);
             });
             byte[] vcardData = new byte[0];
-            String name = "AA " + getTimestampFormatted();
+            String givenName = "Maria";
+            //String givenName = "Vorname";
+            String familyName = "Schraa";
+            //String familyName = "Nach + " + getTimestampFormatted();
+            String prefixName = "";
+            String suffixName = "";
+            String organization = "Insanto Seniorenresidenz Wesel GmbH";
+            String workTitle = "Einrichtungsleitung";
+            String workAddressStreet = "Dinslakener Landstr. 15";
+            String workAddressPostcode = "46483";
+            String workAddressCity = "Wesel";
+            String workAddressCountry = "Deutschland";
+            String workTelephoneNumber = "0281475740";
+            String workFaxNumber = "028147574499";
+            String workTelephoneCellNumber = "01621079892";
+            String workEmail = "EL-WEL@insanto.de";
+            String workUrl = "https://insanto.de";
+            //String workGeoCoordinate = "51.653257241208195, 6.625781480567649";
+
+            /*
             String orga = "Testorga";
             String addr = "Dinslakener Landstr. 15, 46483 Wesel";
             String telBusi = "0281475740";
             String emailBusi = "EL-WEL@insanto.de";
             String url = "https://insanto.de";
+            */
 
-            String vcardString = generateVcard(name, orga, "", telBusi, emailBusi, url);
 
-            vcardString = Ezvcard.write(CreateVCard.createVCard()).version(VCardVersion.V3_0).go();
+            /*
+            String givenName,
+            String familyName,
+            String prefixName, // like dr
+            String suffixName,
+            String organization,
+            String workTitle,
+            String workAddressStreet,
+            String workAddressPostcode,
+            String workAddressCity,
+            String workAddressCountry,
+            String workTelephoneNumber,
+            String workFaxNumber,
+            String workTelephoneCellNumber,
+            String workEmail,
+            String workUrl,
+            String workGeoCoordinate // from google maps 51.653257241208195, 6.625781480567649
+             */
 
+            //String vcardString = generateVcard(name, orga, "", telBusi, emailBusi, url);
+            String vcardString = "";
+
+            //vcardString = Ezvcard.write(CreateVCard.createSampleVCard()).version(VCardVersion.V2_1).go();
+            vcardString = Ezvcard.write(CreateVCard.createWorkVCard(givenName, familyName, prefixName, suffixName, organization, workTitle, workAddressStreet, workAddressPostcode, workAddressCity, workAddressCountry, workTelephoneNumber, workFaxNumber, workTelephoneCellNumber, workEmail, workUrl)).version(VCardVersion.V2_1).go();
+            System.out.println("VCard sample\n" + vcardString);
 
             String finalVcardString = vcardString;
             runOnUiThread(() -> {
@@ -121,7 +163,7 @@ public class WriteNfcNdefVcard extends AppCompatActivity implements NfcAdapter.R
             // data is encoded in US-ASCII:
             vcardData = vcardString.getBytes(StandardCharsets.US_ASCII);
 
-            NdefRecord ndefRecordVcard = new NdefRecord(NdefRecord.TNF_MIME_MEDIA, "text(vcard".getBytes(StandardCharsets.UTF_8), new byte[] {}, vcardData);
+            NdefRecord ndefRecordVcard = new NdefRecord(NdefRecord.TNF_MIME_MEDIA, ("text/vcard").getBytes(StandardCharsets.US_ASCII), new byte[] {}, vcardData);
 
             NdefRecord ndefRecord1Text = NdefRecord.createTextRecord("en", String.valueOf(timeNow) +
                     timeNow);
@@ -138,7 +180,7 @@ public class WriteNfcNdefVcard extends AppCompatActivity implements NfcAdapter.R
 
             try {
                 mNdef.connect();
-                // ### mNdef.writeNdefMessage(mMsg);
+                mNdef.writeNdefMessage(mMsg);
                 // Success if got to here
                 runOnUiThread(() -> {
                     Toast.makeText(getApplicationContext(),
@@ -199,16 +241,25 @@ public class WriteNfcNdefVcard extends AppCompatActivity implements NfcAdapter.R
         super.onPointerCaptureChanged(hasCapture);
     }
 
-    private String generateVcard(String name, String organization,
+    private String generateVcardWork21(String givenName,
+                                       String familyName,
+                                       String prefixName,
+                                       String suffixName,
+                                       String organization,
+
                                  String address, String telBusiness,
                                  String emailBusiness,
                                  String url) {
-        String vString = "BEGIN:VCARD" + "\n";
-        // as a name is neccessary I use a dummy name if no name is given
-        if (name.equals("")) name = "No name provided";
-        vString = vString + "FN:" + name + "\n";
+        String vString = "BEGIN:VCARD" + "\n" + "VERSION:2.1" + "\n";
+
+        // as a family name is neccessary I use a dummy name if no name is given
+        if (familyName.equals("")) familyName = "No name provided";
+        vString = vString + "N:" + familyName + ";" + givenName + ";" +
+                ";" + prefixName + ";" + suffixName;
+        vString = vString + "FN:" + prefixName.trim() + " " + givenName.trim() +
+                " " +  "\n";
         if (!organization.equals("")) {
-            vString = vString + "ORG:" + organization + "\n";
+            vString = vString + "ORG:" + organization + ";\n";
         }
         // address is street, \, plz place ;;;;;
         if (!address.equals("")) {

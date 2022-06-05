@@ -1,0 +1,59 @@
+Ezvcard.write(CreateVCard.createVCard()).version(VCardVersion.V3_0).go()
+I/System.out: VCard sample
+I/System.out: BEGIN:VCARD
+I/System.out: VERSION:3.0
+I/System.out: PRODID:ez-vcard 0.11.3
+I/System.out: N:Doe;Jonathan;;Mr
+I/System.out: FN:Jonathan Doe
+I/System.out: NICKNAME:John,Jonny
+I/System.out: TITLE:Widget Engineer
+I/System.out: ORG:Acme Co. Ltd.;Widget Department
+I/System.out: ADR;TYPE=work:;;123 Wall St.;New York;NY;12345;USA
+I/System.out: LABEL;TYPE=work:123 Wall St.\nNew York\, NY 12345\nUSA
+I/System.out: ADR;TYPE=home:;;123 Main St.;Albany;NY;54321;USA
+I/System.out: LABEL;TYPE=home:123 Main St.\nAlbany\, NY 54321\nUSA
+I/System.out: TEL;TYPE=work:1-555-555-1234
+I/System.out: TEL;TYPE=work,cell:1-555-555-5678
+I/System.out: EMAIL;TYPE=home:johndoe@hotmail.com
+I/System.out: EMAIL;TYPE=work:doe.john@acme.com
+I/System.out: URL:http://www.acme-co.com
+I/System.out: CATEGORIES:widgetphile,biker,vCard expert
+I/System.out: GEO:37.6;-95.67
+I/System.out: TZ:-04:00
+I/System.out: UID:urn:uuid:aa47b57f-9ae6-4bbc-829e-3b321c628b78
+I/System.out: REV:2022-06-05T08:51:04Z
+I/System.out: END:VCARD
+
+I/System.out: BEGIN:VCARD
+I/System.out: VERSION:2.1
+I/System.out: X-PRODID:ez-vcard 0.11.3
+I/System.out: N:Doe;Jonathan;;Mr
+I/System.out: FN:Jonathan Doe
+I/System.out: TITLE:Widget Engineer
+I/System.out: ORG:Acme Co. Ltd.;Widget Department
+I/System.out: ADR;TYPE=work:;;123 Wall St.;New York;NY;12345;USA
+I/System.out: LABEL;TYPE=work;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:123 Wall St.=0ANew =
+I/System.out: York, NY 12345=0AUSA
+I/System.out: ADR;TYPE=home:;;123 Main St.;Albany;NY;54321;USA
+I/System.out: LABEL;TYPE=home;ENCODING=QUOTED-PRINTABLE;CHARSET=UTF-8:123 Main St.=0AAlb=
+I/System.out: any, NY 54321=0AUSA
+I/System.out: TEL;TYPE=work:1-555-555-1234
+I/System.out: TEL;TYPE=work;TYPE=cell:1-555-555-5678
+I/System.out: EMAIL;TYPE=home:johndoe@hotmail.com
+I/System.out: EMAIL;TYPE=work:doe.john@acme.com
+I/System.out: URL:http://www.acme-co.com
+I/System.out: GEO:37.6;-95.67
+I/System.out: TZ:-0400
+I/System.out: UID:urn:uuid:3d5bd74e-6309-471c-8cc5-692b3ff0b2dd
+I/System.out: REV:20220605T085315Z
+I/System.out: END:VCARD
+
+BEGIN:VCARD
+VERSION:2.1
+N:Familyname;Givenname ;Secondgivenname;Nameprefix;Namesuffix
+FN:Nameprefix Givenname Secondgivenname Familyname, Namesuffix
+TEL;CELL:004917151552555
+END:VCARD
+
+Insanto Wesel coordinates: 51.653257241208195, 6.625781480567649
+
