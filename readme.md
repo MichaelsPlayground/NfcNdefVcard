@@ -17,7 +17,14 @@ https://mvnrepository.com/artifact/com.googlecode.ez-vcard/ez-vcard
 // https://mvnrepository.com/artifact/com.googlecode.ez-vcard/ez-vcard
 implementation group: 'com.googlecode.ez-vcard', name: 'ez-vcard', version: '0.11.3'
 
+Eigene Tests mit iPhone:
 
+Ein iPhone kann NDEF-formatierte NFC tags lesen, aber:
+
+- beispielsweise Google Streetview ist nicht grundsätzlich verfügbar und der Apple store möchte gerne die app laden
+- sofern eine NFC reader app geladen ist wird der VCard Datensatz angezeigt und kann auch hinzugefügt werden
+- ist keine reader app vorhanden wird NICHTS angezeigt. Die übliche Empfehlung ist: die VCard soll als Datei auf einem Portal 
+gespeichert sein und auf dem NFC tag wird nur ein Link zum Download der *v.cf Datei gespeichert werden. 
 
 ```plaintext
 String str =
