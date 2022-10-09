@@ -19,7 +19,7 @@ implementation group: 'com.googlecode.ez-vcard', name: 'ez-vcard', version: '0.1
 
 Eigene Tests mit iPhone:
 
-Ein iPhone kann NDEF-formatierte NFC tags lesen, aber:
+Ein iPhone kann (nur) NDEF-formatierte NFC tags lesen, aber:
 
 - beispielsweise Google Streetview ist nicht grundsätzlich verfügbar und der Apple store möchte gerne die app laden
 - sofern eine NFC reader app geladen ist wird der VCard Datensatz angezeigt und kann auch hinzugefügt werden
@@ -69,3 +69,8 @@ ORG:Inhouse Wesel GmbH
 TITLE:Senior Manager
 END:VCARD
 ````
+
+The app icon is generated with help from **Launcher icon generator** 
+(https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html), 
+(options trim image and resize to 110%, color #2196F3).
+

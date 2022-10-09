@@ -22,9 +22,14 @@ import android.widget.Toast;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import ezvcard.Ezvcard;
+import ezvcard.VCard;
+import ezvcard.property.FormattedName;
+import ezvcard.property.StructuredName;
+
 public class ReadNfcNdefVcard extends AppCompatActivity implements NfcAdapter.ReaderCallback {
 
-    TextView ndefMessage;
+    TextView ndefMessage, vcardData;
     String ndefMessageString;
 
     private NfcAdapter mNfcAdapter;
@@ -34,6 +39,7 @@ public class ReadNfcNdefVcard extends AppCompatActivity implements NfcAdapter.Re
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_nfc_ndef_vcard);
         ndefMessage = findViewById(R.id.tvNdefMessage);
+        vcardData = findViewById(R.id.tvVcardMessage);
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
     }
@@ -122,29 +128,6 @@ public class ReadNfcNdefVcard extends AppCompatActivity implements NfcAdapter.Re
                     byte[] ndefType = record[i].getType();
                     byte[] ndefPayload = record[i].getPayload();
 
-/*
-                    // check for encrypted content in an External NDEF message
-                    short ndefInf4 = (short) 4;
-                    if (Short.compare(ndefInf, ndefInf4) == 0) {
-                        // this is a record type 4
-                        byte[] saltDefinition = "de.androidcrypto.aes256gcmpbkdf2:salt".getBytes(StandardCharsets.UTF_8);
-                        byte[] nonceDefinition = "de.androidcrypto.aes256gcmpbkdf2:nonce".getBytes(StandardCharsets.UTF_8);
-                        byte[] ciphertextDefinition = "de.androidcrypto.aes256gcmpbkdf2:ciphertext".getBytes(StandardCharsets.UTF_8);
-                        // checking for salt
-                        if (Arrays.equals(ndefType, saltDefinition)) {
-                            // salt definition found
-                            saltBytes = Arrays.copyOf(ndefPayload, ndefPayload.length);
-                        }
-                        if (Arrays.equals(ndefType, nonceDefinition)) {
-                            // nonce definition found
-                            nonceBytes = Arrays.copyOf(ndefPayload, ndefPayload.length);
-                        }
-                        if (Arrays.equals(ndefType, ciphertextDefinition)) {
-                            // ciphertext definition found
-                            ciphertextBytes = Arrays.copyOf(ndefPayload, ndefPayload.length);
-                        }
-                    }
-*/
                     ndefContent = ndefContent + "rec " + i + " inf: " + ndefInf +
                             " type: " + bytesToHex(ndefType) +
                             " payload: " + bytesToHex(ndefPayload) +
@@ -154,11 +137,25 @@ public class ReadNfcNdefVcard extends AppCompatActivity implements NfcAdapter.Re
                         ndefMessage.setText(finalNdefContent);
                     });
 
+                    // now we are parsing the vcard
+                    String ndefPayloadString = new String(ndefPayload);
+                    System.out.println("*** ndefPayloadString: " + ndefPayloadString);
+                    VCard vcard = Ezvcard.parse(ndefPayloadString).first();
+                    StructuredName structuredName = vcard.getStructuredName();
+                    FormattedName formattedName = vcard.getFormattedName();
+                    String firstName = structuredName.getGiven();
+                    String lastName = structuredName.getFamily();
+                    String prefixName = structuredName.getPrefixes().get(0); // just get the first one
+                    String suffixName = structuredName.getSuffixes().get(0); // just get the first one
+                    String finalVCardString =   prefixName + " " + firstName + " " + lastName + " " + suffixName;
+                    runOnUiThread(() -> {
+                        vcardData.setText(finalVCardString);
+                    });
                 }
             }
+
         }
     }
-
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
